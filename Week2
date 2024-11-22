@@ -1,0 +1,106 @@
+//week2
+//8. String to Integer (atoi)
+class Solution {
+    public int myAtoi(String s) {
+        if (s == null || s.length() == 0) return 0;
+        int index = 0, sign = 1, total = 0;
+
+        while (index < s.length() && s.charAt(index) == ' ')
+            index++;
+
+        if (index < s.length() && (s.charAt(index) == '+' || s.charAt(index) == '-')) {
+            sign = s.charAt(index) == '+' ? 1 : -1;
+            index++;
+        }
+
+        while (index < s.length()) {
+            int digit = s.charAt(index) - '0';
+            if (digit < 0 || digit > 9) break; 
+
+            if (total > Integer.MAX_VALUE / 10 ||
+                (total == Integer.MAX_VALUE / 10 && digit > Integer.MAX_VALUE % 10)) {
+                return sign == 1 ? Integer.MAX_VALUE : Integer.MIN_VALUE;
+            }
+
+            total = 10 * total + digit;
+            index++;
+        }
+
+        return total * sign;
+    }
+}
+
+//438. Find All Anagrams in a String
+class Solution {
+    public List<Integer> findAnagrams(String s, String p) {
+        HashMap<Character,Integer> map1=new HashMap<>();
+        HashMap<Character,Integer> map2=new HashMap<>();
+        List<Integer> result=new ArrayList<>();
+
+        char[] charArr=p.toCharArray();
+        for(char c:charArr){
+            map1.put(c,map1.getOrDefault(c,0)+1);
+        }
+
+        int left=0;
+        int right =0;
+        int valid=0;
+        while(right<s.length()){
+            char c=s.charAt(right);
+            right++;
+
+            if(map1.containsKey(c)){
+                map2.put(c,map2.getOrDefault(c,0)+1);
+                if(map1.get(c).equals(map2.get(c))){
+                    valid++;
+                }
+            }
+
+            if (right - left == p.length()) {
+                if (valid == map1.size()) {
+                    result.add(left);
+                }
+                
+                char d = s.charAt(left);
+                left++;
+                if (map1.containsKey(d)) {
+                    if (map2.get(d).equals(map1.get(d))) {
+                        valid--;
+                    }
+                    map2.put(d, map2.get(d) - 1);
+                }
+            }
+
+        }
+        return result;
+    }
+}
+
+//151. Reverse Words in a String
+class Solution {
+    public String reverseWords(String s) {
+       String[] words = s.split("\\s+");
+       HashMap<Integer,String> map=new HashMap<>();
+       int i=0;
+       for(String word:words){
+        if(!word.equals("")){
+            map.put(i,word);
+            i++;
+
+        }
+        
+       }
+       StringBuilder sb=new StringBuilder();
+       i--;
+       sb.append(map.get(i));
+       i--;
+       for(int j=i;j>=0;j--){
+        sb.append(" ");
+        sb.append(map.get(j));
+       }
+
+       String str = sb.toString();
+       return str;
+
+    }
+}
