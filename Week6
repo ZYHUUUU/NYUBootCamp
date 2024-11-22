@@ -1,0 +1,43 @@
+//week6
+//236. Lowest Common Ancestor of a Binary Tree
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        if (root == null || root == p || root == q) {
+            return root;
+        }
+        TreeNode left = lowestCommonAncestor(root.left, p, q);
+        TreeNode right = lowestCommonAncestor(root.right, p, q);
+        if (left != null && right != null) {
+            return root;
+        }
+        return left != null ? left : right;
+        
+    }
+}
+
+//347. Top K Frequent Elements
+class Solution {
+    public int[] topKFrequent(int[] nums, int k) {
+        int[] ans=new int[k];
+        HashMap<Integer,Integer> map=new HashMap<>();
+        for(int num:nums){
+            map.put(num,map.getOrDefault(num,0)+1);
+        }
+        List<Map.Entry<Integer, Integer>> entryList = new ArrayList<>(map.entrySet());
+         entryList.sort(Map.Entry.comparingByValue(Comparator.reverseOrder()));
+        for (int i=0;i<k;i++) {
+            ans[i]=entryList.get(i).getKey();
+        }
+        return ans;
+        
+    }
+}
