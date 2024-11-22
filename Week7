@@ -1,0 +1,127 @@
+//week7
+//199. Binary Tree Right Side View
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+    private List<Integer> list = new ArrayList<>();
+    private int maxDepth = -1;
+    
+    public List<Integer> rightSideView(TreeNode root) {
+        dfs(root, 0);
+        return list;
+    }
+
+    private void dfs(TreeNode node, int depth) {
+        if (node == null) {
+            return;
+        }
+
+        if (depth > maxDepth) {
+            list.add(node.val);
+            maxDepth = depth;
+        }
+        
+        dfs(node.right, depth + 1);
+        dfs(node.left, depth + 1);
+    }
+}
+
+//994. Rotting Oranges
+class Solution {
+    int[] dr = new int[]{-1, 0, 1, 0};
+    int[] dc = new int[]{0, -1, 0, 1};
+
+    public int orangesRotting(int[][] grid) {
+        int R = grid.length, C = grid[0].length;
+        Queue<Integer> queue = new ArrayDeque<Integer>();
+        Map<Integer, Integer> depth = new HashMap<Integer, Integer>();
+        for (int r = 0; r < R; ++r) {
+            for (int c = 0; c < C; ++c) {
+                if (grid[r][c] == 2) {
+                    int code = r * C + c;
+                    queue.add(code);
+                    depth.put(code, 0);
+                }
+            }
+        }
+        int ans = 0;
+        while (!queue.isEmpty()) {
+            int code = queue.remove();
+            int r = code / C, c = code % C;
+            for (int k = 0; k < 4; ++k) {
+                int nr = r + dr[k];
+                int nc = c + dc[k];
+                if (0 <= nr && nr < R && 0 <= nc && nc < C && grid[nr][nc] == 1) {
+                    grid[nr][nc] = 2;
+                    int ncode = nr * C + nc;
+                    queue.add(ncode);
+                    depth.put(ncode, depth.get(code) + 1);
+                    ans = depth.get(ncode);
+                }
+            }
+        }
+        for (int[] row: grid) {
+            for (int v: row) {
+                if (v == 1) {
+                    return -1;
+                }
+            }
+        }
+        return ans;
+    }
+}
+
+//210. Course Schedule II
+class Solution {
+    public int[] findOrder(int numCourses, int[][] prerequisites) {
+        List<List<Integer>> graph = new ArrayList<>();
+        int[] inDegree = new int[numCourses];
+
+        for (int i = 0; i < numCourses; i++) {
+            graph.add(new ArrayList<>());
+        }
+
+        for (int[] prerequisite : prerequisites) {
+            int course = prerequisite[0];
+            int pre = prerequisite[1];
+            graph.get(pre).add(course);
+            inDegree[course]++;
+        }
+
+        Queue<Integer> queue = new LinkedList<>();
+        for (int i = 0; i < numCourses; i++) {
+            if (inDegree[i] == 0) {
+                queue.offer(i);
+            }
+        }
+
+        int[] order = new int[numCourses];
+        int index = 0;
+        while (!queue.isEmpty()) {
+            int course = queue.poll();
+            order[index++] = course;
+            
+            for (int nextCourse : graph.get(course)) {
+                inDegree[nextCourse]--;
+                if (inDegree[nextCourse] == 0) {
+                    queue.offer(nextCourse);
+                }
+            }
+        }
+
+        return index == numCourses ? order : new int[0];
+    }
+}
