@@ -1,0 +1,119 @@
+//week4
+//232. Implement Queue using Stacks
+class MyQueue {
+    private Stack<Integer> stackIn;
+    private Stack<Integer> stackOut;
+
+    public MyQueue() {
+        stackIn = new Stack<>();
+        stackOut = new Stack<>();
+        
+    }
+    
+    public void push(int x) {
+        stackIn.push(x);
+
+        
+    }
+    
+    public int pop() {
+        if (stackOut.isEmpty()) {
+            while (!stackIn.isEmpty()) {
+                stackOut.push(stackIn.pop());
+            }
+        }
+        return stackOut.pop();
+        
+    }
+    
+    public int peek() {
+        if (stackOut.isEmpty()) {
+            while (!stackIn.isEmpty()) {
+                stackOut.push(stackIn.pop());
+            }
+        }
+        return stackOut.peek();
+        
+    }
+    
+    public boolean empty() {
+        return stackIn.isEmpty() && stackOut.isEmpty();
+        
+    }
+}
+
+/**
+ * Your MyQueue object will be instantiated and called as such:
+ * MyQueue obj = new MyQueue();
+ * obj.push(x);
+ * int param_2 = obj.pop();
+ * int param_3 = obj.peek();
+ * boolean param_4 = obj.empty();
+ */
+
+//394. Decode String
+import java.util.LinkedList;
+import java.util.Queue;
+
+class Solution {
+    public String decodeString(String s) {
+        Queue<Character> queue = new LinkedList<>();
+        for (char c : s.toCharArray()) {
+            queue.offer(c);
+        }
+        return decodeHelper(queue);
+    }
+
+    private String decodeHelper(Queue<Character> queue) {
+        StringBuilder sb = new StringBuilder();
+        int num = 0;
+        
+        while (!queue.isEmpty()) {
+            char c = queue.poll();
+            
+            if (Character.isDigit(c)) {
+                num = num * 10 + (c - '0');
+            } else if (c == '[') {
+                String decodedString = decodeHelper(queue);
+                for (int i = 0; i < num; i++) {
+                    sb.append(decodedString);
+                }
+                num = 0;
+            } else if (c == ']') {
+                break;
+            } else {
+                sb.append(c);
+            }
+        }
+        
+        return sb.toString();
+    }
+}
+
+//2327. Number of People Aware of a Secret
+class Solution {
+    public int peopleAwareOfSecret(int n, int delay, int forget) {
+        int MOD = 1_000_000_007;
+        Queue<int[]> queue = new LinkedList<>();
+        int newPeople = 1;  
+        int totalPeople = 0; 
+
+        for (int day = 1; day <= n; day++) {
+
+            if (day >= delay) {
+                queue.offer(new int[] {day + delay, newPeople});
+            }
+
+            if (day >= forget) {
+                while (!queue.isEmpty() && queue.peek()[0] == day) {
+                    int[] forgetBatch = queue.poll();
+                    newPeople = (newPeople - forgetBatch[1] + MOD) % MOD;
+                }
+            }
+
+            totalPeople = (totalPeople + newPeople) % MOD;
+        }
+
+        return totalPeople;
+    }
+}
