@@ -1,0 +1,74 @@
+//week1
+//167. Two Sum II - Input Array Is Sorted
+class Solution {
+    public int[] twoSum(int[] numbers, int target) {
+        int left=0;
+        int right=numbers.length-1;
+        int[] result=new int[2];
+        while(left<right){
+            if(numbers[left]+numbers[right]==target){
+                result[0]=left+1;
+                result[1]=right+1;
+                return result;
+            }else if(numbers[left]+numbers[right]>target){
+                right--;
+            }else{
+                left++;
+            }
+        }
+        return result;
+
+    }
+}
+
+//238. Product of Array Except Self
+class Solution {
+    public int[] productExceptSelf(int[] nums) {
+        int[] left=new int[nums.length];
+        left[0]=1;
+        int[] right=new int[nums.length];
+        right[nums.length-1]=1;
+
+        for(int i=1;i<nums.length;i++){
+            left[i]=nums[i-1]*left[i-1];
+        }
+        for(int i=nums.length-2;i>=0;i--){
+            right[i]=nums[i+1]*right[i+1];
+        }
+        for(int i=0;i<nums.length;i++){
+            nums[i]=right[i]*left[i];
+        }
+        return nums;
+
+    }
+}
+
+//75. Sort Colors
+class Solution {
+    public void sortColors(int[] nums) {
+        int a=0;
+        int b=0;
+        int c=0;
+        for(int num:nums){
+            if(num==0){
+                a++;
+            }else if(num==1){
+                b++;
+            }else{
+                c++;
+            }
+        }
+        for(int i=0;i<a;i++){
+            nums[i]=0;
+        }
+        for(int i=a;i<a+b;i++){
+            nums[i]=1;
+        }
+        for(int i=a+b;i<nums.length;i++){
+            nums[i]=2;
+        }
+
+    }
+}
+
+
